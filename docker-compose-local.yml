@@ -1,0 +1,21 @@
+services:
+    vTamp:
+        volumes:            
+            - ./:/home/tapas
+            - /tmp/.X11-unix:/tmp/.X11-unix
+        user: "${CUSTUM_UID}:${CUSTUM_GID}"
+        image: "miguelzamoram/tapas-container"
+        stdin_open: true # docker run -i
+        tty: true        # docker run -t
+        command: /bin/bash
+        environment:
+            - DISPLAY=${DISPLAY}
+            - HOME=/home/tapas
+        container_name: tapasContainer
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          device_ids: ['0']
+                          capabilities: [gpu]

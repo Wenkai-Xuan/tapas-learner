@@ -24,6 +24,10 @@
     cd /home/tapas/multi-agent-tamp-solver/24-data-gen/
     make
     ```
+- Loging to wand. (Required for now)
+    ```    
+    wandb login --relogin
+    ```
 - Run the code
     ```
     cd /home/tapas/src/

@@ -5,8 +5,6 @@ import sys
 import shutil 
 
 import numpy as np
-from tensordict import TensorDict
-from torchrl.data.replay_buffers import LazyMemmapStorage, ReplayBuffer
 
 import psutil
 import torch.nn as nn
@@ -16,20 +14,8 @@ import wandb
 import random
 from datetime import datetime
 
-from TampDatasample import *
-from TampDataset import *
-from TAMPFormer import *
-
-import pyarrow as pa
-import pyarrow.parquet as pq
-
-from datasets import Dataset
-from datasets import load_dataset
-
-import pandas as pd
-import time
-
-from TampUtils import *
+from TapasFormer import *
+from TapasUtils import *
 #%%
 # Define params
 ENV_NAME = "random"

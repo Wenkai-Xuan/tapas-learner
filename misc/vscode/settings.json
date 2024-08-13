@@ -1,0 +1,11 @@
+{
+    "files.exclude": {
+        ".cache": true,
+        ".config": true,
+        ".dotnet": true,
+        ".gnupg": true,
+        ".netrc": true,
+        ".ssh": true,
+        ".vscode-server": true
+    }
+}

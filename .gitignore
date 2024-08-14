@@ -33,4 +33,6 @@ src/__pycache__/
 .vscode-server/
 logs/
 wandb/
+.local
+.lesshst
 

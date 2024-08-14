@@ -6,6 +6,11 @@
         ".gnupg": true,
         ".netrc": true,
         ".ssh": true,
-        ".vscode-server": true
+        ".vscode-server": true,
+        "logs": true,
+        "wandb": true,
+        ".bash_history": true,
+        "__pycache__": true,
+        "src/__pycache__": true,
     }
 }

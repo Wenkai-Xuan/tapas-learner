@@ -14,7 +14,9 @@ import wandb
 import random
 from datetime import datetime
 
+
 from TapasFormer import *
+from TapasDataset import *
 from TapasUtils import *
 #%%
 # Define params
@@ -30,10 +32,9 @@ batch_size = 128
 # The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
 # See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
 # Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader() .
-dataset = load_dataset("MiguelZamoraM/TAPASDevelop",
+dataset = load_dataset("MiguelZamoraM/TAPAS",
                        data_files={'train': "env/" + ENV_NAME + "/train/samples_*",
-                                   'test': "env/" + ENV_NAME + "/test/samples_*"},
-                       token=True)  # , streaming=True, download_mode='force_redownload'
+                                   'test': "env/" + ENV_NAME + "/test/samples_*"})  # ,token=True, download_mode='force_redownload'
 #print("pid", os.getpid(), dataset)
 
 #Set num_shards >= num_workers.
@@ -65,7 +66,7 @@ def run_training_loop():
     max_num_batches_train = int(len(dataset['train']) / batch_size)
     max_num_batches_test = int(len(dataset['test']) / batch_size)
 
-    obs_dim = TampDatasample().get_raw_features_dim()
+    obs_dim = get_raw_features_dim()
     
     LOG_DIR = os.path.join("./logs", datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     if not os.path.exists(LOG_DIR):
@@ -106,13 +107,13 @@ def run_training_loop():
     write_json_file(LOG_DIR + "/params.json", params)
         
     
-    run = wandb.init(project="TAMPFormer_env_" + ENV_NAME, config=params)
+    run = wandb.init(project="TapasFormer_env_" + ENV_NAME, config=params)
     wandb.login()
     #wandb.log({"normalization_params": normalization_params})
     wandb.save(LOG_DIR + "/normalization_params.json")
     wandb.save(LOG_DIR + "/params.json")
             
-    model = TAMPformer(obs_dim=obs_dim, normalization_params=normalization_params).to(DEVICE)
+    model = TapasFormer(obs_dim=obs_dim, normalization_params=normalization_params).to(DEVICE)
     criterion = nn.MSELoss()
     optimiser = torch.optim.RAdam(model.parameters(), weight_decay=0, lr=LEARNING_RATE)
     scheduler = torch.optim.lr_scheduler.LinearLR(optimiser, start_factor=1.0, end_factor=0.1, total_iters= max_num_batches_train * NUM_EPOCHS)

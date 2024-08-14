@@ -1,5 +1,6 @@
 {
     "files.exclude": {
+        ".gitconfig": true,
         ".cache": true,
         ".config": true,
         ".dotnet": true,
@@ -14,6 +15,8 @@
         "src/__pycache__": true,
         ".local": true,
         ".lesshst": true,
+        "src/logs/": true,
+        "src/wandb/": true,
         // --------------------------------------------
         // Ignore sames files as as multi-agent-tamp-solver/24-data-gen/.gitignore        
         "multi-agent-tamp-solver/24-data-gen/*.exe": true,

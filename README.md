@@ -35,7 +35,7 @@
     ```
 
 ## Evaluation
-    TODO
+- TODO (Coming soon).
 
 
 ## Cleanup
@@ -44,6 +44,11 @@ Remember to stop the containers after exiting.
 docker compose down
 ```
 
+## TODO
+    - General code cleanup
+    - Make wandb optional.
+    - Add scripts to evaluate the trained makespan predictor.
+    - Add hydra to manage different configurations.
 
 # Citation
 If you use this codebase in your research, please cite the following paper

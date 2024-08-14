@@ -18,27 +18,28 @@
         "src/logs/": true,
         "src/wandb/": true,
         // --------------------------------------------
-        // Ignore sames files as as multi-agent-tamp-solver/24-data-gen/.gitignore        
-        "multi-agent-tamp-solver/24-data-gen/*.exe": true,
-        "multi-agent-tamp-solver/24-data-gen/*.o": true,
-        "multi-agent-tamp-solver/24-data-gen/build": true,
-        "multi-agent-tamp-solver/24-data-gen/CMakeLists.txt.user": true,
-        "multi-agent-tamp-solver/24-data-gen/.DS_Store": true,
+        // Ignore sames files as as multi-agent-tamp-solver/.gitignore                
+        "multi-agent-tamp-solver/build": true,
+        "multi-agent-tamp-solver/CMakeLists.txt.user": true,
+        "multi-agent-tamp-solver/.DS_Store": true,
         "multi-agent-tamp-solver/24-data-gen/data/out": true,
         
         //# imgui
-        "multi-agent-tamp-solver/24-data-gen/*.ini": true,
+        "multi-agent-tamp-solver/*.ini": true,
         
         //# clion 
-        "multi-agent-tamp-solver/24-data-gen/.idea/": true,
-        "multi-agent-tamp-solver/24-data-gen/cmake-build-*/": true,
+        "multi-agent-tamp-solver/.idea/": true,
+        "multi-agent-tamp-solver/cmake-build-*/": true,
         
         //# vscode
-        "multi-agent-tamp-solver/24-data-gen/.vscode": true,
-        "multi-agent-tamp-solver/24-data-gen/.devcontainer": true,
+        "multi-agent-tamp-solver/.vscode": true,
+        "multi-agent-tamp-solver/.devcontainer": true,
         
         //# clang
-        "multi-agent-tamp-solver/24-data-gen/clang": true,        
+        "multi-agent-tamp-solver/clang": true,        
+        // --------------------------------------------
+        // Ignore sames files as as multi-agent-tamp-solver/24-data-gen/.gitignore                
+
         // --------------------------------------------
         // Ignore sames files as as multi-agent-tamp-solver/rai-fork/.gitignore
         "multi-agent-tamp-solver/rai-fork/config.mk": true,

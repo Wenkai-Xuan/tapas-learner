@@ -11,6 +11,7 @@ services:
         environment:
             - DISPLAY=${DISPLAY}
             - HOME=/home/tapas
+            - SHELL=/bin/bash
         container_name: tapasContainer
         deploy:
             resources:

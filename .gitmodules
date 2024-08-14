@@ -1,3 +1,13 @@
-[submodule "multi-agent-tamp-solver"]
-	path = multi-agent-tamp-solver
-	url = https://github.com/tapas-dataset/multi-agent-tamp-solver
+[submodule "multi-agent-tamp-solver/24-data-gen"]
+	path = multi-agent-tamp-solver/24-data-gen
+	url = git@github.com:vhartman/24-data-gen.git
+[submodule "multi-agent-tamp-solver/rai-fork"]
+	path = multi-agent-tamp-solver/rai-fork
+	url = git@github.com:vhartman/rai.git
+	branch = changes
+[submodule "multi-agent-tamp-solver/rai-manip"]
+	path = multi-agent-tamp-solver/rai-manip
+	url = git@github.com:vhartman/rai-manip.git
+[submodule "multi-agent-tamp-solver/rai-robotModels"]
+	path = multi-agent-tamp-solver/rai-robotModels
+	url = git@github.com:vhartman/rai-robotModels.git

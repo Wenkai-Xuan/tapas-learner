@@ -47,7 +47,7 @@ docker compose down
 ## TODO
     - General code cleanup
     - Make wandb optional.
-    - Add scripts to evaluate the trained makespan predictor.
+    - Configure cpu-only docker.
     - Add hydra to manage different configurations.
 
 # Citation

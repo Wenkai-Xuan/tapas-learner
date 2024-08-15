@@ -16,7 +16,7 @@
 ## Training
 - Launch docker
     ```
-    CUSTUM_UID=$(id -u) CUSTUM_GID=$(id -g) docker compose -f docker-compose-local.yml up -d
+    CUSTUM_UID=$(id -u) CUSTUM_GID=$(id -g) docker compose -f gpu-docker-compose-local.yml up -d
     docker exec -it tapasContainer bash
     ```
 - Compile solver
@@ -35,7 +35,11 @@
     ```
 
 ## Evaluation
-- TODO (Coming soon).
+- Run the code
+    ```
+    cd /home/tapas/src/
+    python test.py
+    ```
 
 
 ## Cleanup

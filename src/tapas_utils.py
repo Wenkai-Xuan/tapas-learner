@@ -1,6 +1,6 @@
 import os
 import torch
-from MultiArmTampSolverUtils import *
+from multiarm_tamp_solver_utils import *
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #print("pid", os.getpid(), device)

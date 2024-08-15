@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from typing import Mapping, List
 
-from TapasUtils import *
+from tapas_utils import *
 
 class TapasDataset(Dataset):
     def __init__(self,

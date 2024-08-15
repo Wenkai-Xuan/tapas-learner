@@ -10,9 +10,9 @@ import random
 from datetime import datetime
 
 from makespan_utils import *
-from TapasFormer import *
-from TapasDataset import *
-from TapasUtils import *
+from tapasformer import *
+from tapas_dataset import *
+from tapas_utils import *
 
 from pathlib import Path
 #%%

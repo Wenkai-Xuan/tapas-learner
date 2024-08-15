@@ -15,9 +15,9 @@ import random
 from datetime import datetime
 
 
-from TapasFormer import *
-from TapasDataset import *
-from TapasUtils import *
+from tapasformer import *
+from tapas_dataset import *
+from tapas_utils import *
 #%%
 # Define params
 ENV_NAME = "random"

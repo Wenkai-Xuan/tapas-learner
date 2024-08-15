@@ -4,7 +4,7 @@ import subprocess
 import time
 import matplotlib.pyplot as plt
 
-from MultiArmTampSolverUtils import *
+from multiarm_tamp_solver_utils import *
 
 class PseudoDirEntry:
    def __init__(self, path):

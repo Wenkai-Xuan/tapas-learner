@@ -13,6 +13,7 @@ services:
             - HOME=/home/tapas
             - SHELL=/bin/bash
         container_name: tapasContainer
+        ## Uncomment the lines below to enable gpu
         deploy:
             resources:
                 reservations:

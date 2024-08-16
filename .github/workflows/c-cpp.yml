@@ -17,8 +17,13 @@ jobs:
                 image: "miguelzamoram/tapas-container-cpu"
                 options: -v ${{ github.workspace }}:/home/tapas -e HOME=/home/tapas -e SHELL=/bin/bash
                 run: |
+                    echo $PWD
+                    ls -la
+                    git submodule update --init --recursive
                     cd /home/tapas/multi-agent-tamp-solver/24-data-gen/
-                    make                    
+                    make
+                    #cd /home/tapas/src/                    
+                    #python train.py ++num_epochs=1 ++train_samples_id="000080000_to_000080868.parquet" ++test_samples_id="000020000_to_000021869.parquet"
           - name: Archive benchmark results
             uses: actions/upload-artifact@v4
             with:

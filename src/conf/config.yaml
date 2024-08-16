@@ -5,3 +5,5 @@ num_epochs: 10
 evals_per_epoch: 5
 batch_size: 128
 num_shards: 8
+train_samples_id: "*"
+test_samples_id: "*"

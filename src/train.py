@@ -33,15 +33,18 @@ def run_training_loop(cfg: DictConfig) -> None:
     NUM_EPOCHS = cfg["num_epochs"]
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
     evals_per_epoch = cfg["evals_per_epoch"]
-    batch_size = cfg["batch_size"]    
+    batch_size = cfg["batch_size"]
+    train_samples_id = cfg["train_samples_id"]   
+    test_samples_id = cfg["test_samples_id"]
+        
     #%%
     # Downloading dataset and converting to iterable dataset is faster than using load_dataset() with streaming=True.
     # The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
     # See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
     # Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader() .
     dataset = load_dataset("MiguelZamoraM/TAPAS",
-                        data_files={'train': "env/" + ENV_NAME + "/train/samples_*",
-                                    'test': "env/" + ENV_NAME + "/test/samples_*"})  # ,token=True, download_mode='force_redownload'
+                        data_files={'train': f"env/{ENV_NAME}/train/samples_{train_samples_id}",
+                                    'test': f"env/{ENV_NAME}/test/samples_{test_samples_id}"})  # ,token=True, download_mode='force_redownload'
     #print("pid", os.getpid(), dataset)
 
     # Set num_shards >= num_workers.

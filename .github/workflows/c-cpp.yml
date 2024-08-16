@@ -11,11 +11,12 @@ jobs:
         steps:
           - name: Check out the repo
             uses: actions/checkout@v3
-          - name: Run the build process with Docker
-            uses: addnab/docker-run-action@v3
             with:
                 token: '${{ secrets.GITHUB_TOKEN }}'
                 submodules: recursive
+          - name: Run the build process with Docker
+            uses: addnab/docker-run-action@v3            
+            with:
                 image: "miguelzamoram/tapas-container-cpu"
                 options: -v ${{ github.workspace }}:/home/tapas -e HOME=/home/tapas -e SHELL=/bin/bash
                 run: |

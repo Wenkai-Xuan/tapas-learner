@@ -21,7 +21,7 @@ jobs:
                 shell: bash
                 options: -v ${{ github.workspace }}:/home/tapas -e HOME=/home/tapas -e SHELL=/bin/bash
                 run: |                    
-                    #source /home/venvs/tapasEnv/bin/activate
+                    source /home/venvs/tapasEnv/bin/activate
                     cd /home/tapas/multi-agent-tamp-solver/24-data-gen/                    
                     make
                     cd /home/tapas/src/                    

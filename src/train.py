@@ -18,49 +18,57 @@ from datetime import datetime
 from tapasformer import *
 from tapas_dataset import *
 from tapas_utils import *
-#%%
-# Define params
-ENV_NAME = "random"
-NUM_THREADS = 8
-LEARNING_RATE = 1e-3
-NUM_EPOCHS = 10
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-evals_per_epoch = 5
-batch_size = 128
-#%%
-# Downloading dataset and converting to iterable dataset is faster than using load_dataset() with streaming=True.
-# The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
-# See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
-# Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader() .
-dataset = load_dataset("MiguelZamoraM/TAPAS",
-                       data_files={'train': "env/" + ENV_NAME + "/train/samples_*",
-                                   'test': "env/" + ENV_NAME + "/test/samples_*"})  # ,token=True, download_mode='force_redownload'
-#print("pid", os.getpid(), dataset)
 
-#Set num_shards >= num_workers.
-# See: https://discuss.huggingface.co/t/num-worker-with-iterabledataset/58914/2
-iterable_train_dataset = dataset['train'].to_iterable_dataset(num_shards=8)
-iterable_test_dataset = dataset['test'].to_iterable_dataset(num_shards=8)
+from omegaconf import DictConfig, OmegaConf
+import hydra
 
-#print("pid", os.getpid(), iterable_train_dataset)
-#print("pid", os.getpid(), iterable_test_dataset)
+@hydra.main(version_base=None, config_path="conf", config_name="config")
+def run_training_loop(cfg: DictConfig) -> None:
+    print(OmegaConf.to_yaml(cfg))
+    #%%
+    # Define params
+    ENV_NAME = cfg["env_name"]
+    NUM_THREADS = cfg["num_threads"]
+    LEARNING_RATE = cfg["learning_rate"]
+    NUM_EPOCHS = cfg["num_epochs"]
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    evals_per_epoch = cfg["evals_per_epoch"]
+    batch_size = cfg["batch_size"]    
+    #%%
+    # Downloading dataset and converting to iterable dataset is faster than using load_dataset() with streaming=True.
+    # The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
+    # See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
+    # Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader() .
+    dataset = load_dataset("MiguelZamoraM/TAPAS",
+                        data_files={'train': "env/" + ENV_NAME + "/train/samples_*",
+                                    'test': "env/" + ENV_NAME + "/test/samples_*"})  # ,token=True, download_mode='force_redownload'
+    #print("pid", os.getpid(), dataset)
 
-iter_train_ds_processed = iterable_train_dataset.map(process_data, remove_columns=iterable_train_dataset.column_names)
-iter_test_ds_processed = iterable_test_dataset.map(process_data, remove_columns=iterable_test_dataset.column_names)
+    # Set num_shards >= num_workers.
+    # See: https://discuss.huggingface.co/t/num-worker-with-iterabledataset/58914/2
+    num_shards_train = min(len(dataset['train']), NUM_THREADS)
+    num_shards_test = min(len(dataset['test']), NUM_THREADS)
+    iterable_train_dataset = dataset['train'].to_iterable_dataset(num_shards=num_shards_train)
+    iterable_test_dataset = dataset['test'].to_iterable_dataset(num_shards=num_shards_test)
 
-#print("pid", os.getpid(), iter_train_ds_processed)
-#print("pid", os.getpid(), iter_test_ds_processed)
+    #print("pid", os.getpid(), iterable_train_dataset)
+    #print("pid", os.getpid(), iterable_test_dataset)
 
-shuffled_train_dataset = iter_train_ds_processed.shuffle(seed=42, buffer_size=128)
-shuffled_test_dataset = iter_test_ds_processed.shuffle(seed=42, buffer_size=128)
+    iter_train_ds_processed = iterable_train_dataset.map(process_data, remove_columns=iterable_train_dataset.column_names)
+    iter_test_ds_processed = iterable_test_dataset.map(process_data, remove_columns=iterable_test_dataset.column_names)
 
-train_ds_torch = shuffled_train_dataset.with_format("torch")
-test_ds_torch = shuffled_test_dataset.with_format("torch")
+    #print("pid", os.getpid(), iter_train_ds_processed)
+    #print("pid", os.getpid(), iter_test_ds_processed)
 
-#print("pid", os.getpid(), train_ds_torch)
-#print("pid", os.getpid(), test_ds_torch)
-#%%
-def run_training_loop():
+    shuffled_train_dataset = iter_train_ds_processed.shuffle(seed=42, buffer_size=128)
+    shuffled_test_dataset = iter_test_ds_processed.shuffle(seed=42, buffer_size=128)
+
+    train_ds_torch = shuffled_train_dataset.with_format("torch")
+    test_ds_torch = shuffled_test_dataset.with_format("torch")
+
+    #print("pid", os.getpid(), train_ds_torch)
+    #print("pid", os.getpid(), test_ds_torch)
+    
     test_loader = DataLoader(test_ds_torch, batch_size=batch_size, num_workers=NUM_THREADS, persistent_workers=True)
     train_loader = DataLoader(train_ds_torch, batch_size=batch_size, num_workers=NUM_THREADS, persistent_workers=True)
     max_num_batches_train = int(len(dataset['train']) / batch_size)

@@ -36,3 +36,6 @@ wandb/
 .local
 .lesshst
 
+#Hydra folders
+.outputs/
+

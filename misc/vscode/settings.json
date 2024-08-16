@@ -17,6 +17,8 @@
         ".lesshst": true,
         "src/logs/": true,
         "src/wandb/": true,
+        "outputs/": true,
+        ".nv/": true,
         // --------------------------------------------
         // Ignore sames files as as multi-agent-tamp-solver/.gitignore                
         "multi-agent-tamp-solver/build": true,
@@ -39,7 +41,7 @@
         "multi-agent-tamp-solver/clang": true,        
         // --------------------------------------------
         // Ignore sames files as as multi-agent-tamp-solver/24-data-gen/.gitignore                
-
+        // TODO
         // --------------------------------------------
         // Ignore sames files as as multi-agent-tamp-solver/rai-fork/.gitignore
         "multi-agent-tamp-solver/rai-fork/config.mk": true,

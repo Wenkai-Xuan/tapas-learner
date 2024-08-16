@@ -1,0 +1,11 @@
+torch
+cbor2
+psutil
+tqdm
+wandb
+matplotlib
+pandas
+huggingface_hub
+datasets
+pyquaternion
+hydra-core

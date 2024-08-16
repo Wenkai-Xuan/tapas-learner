@@ -1,0 +1,62 @@
+FROM ubuntu:22.04
+SHELL ["/bin/bash", "-c"]
+ENV HOME=/home/tapas \
+    SHELL=/bin/bash
+WORKDIR /home
+
+
+# Install dependencies
+RUN apt-get update -qq && \
+    apt install -y \
+    build-essential \
+    git \
+    xvfb \
+    libeigen3-dev \
+    libccd-dev \
+    software-properties-common \
+    cmake \
+    libspdlog-dev \
+    python3-dev 
+    
+RUN git clone https://github.com/flexible-collision-library/fcl.git && \
+    cd fcl  && \
+    mkdir build  && \
+    cd build  && \
+    cmake .. && \
+    make && \
+    make install
+    
+ENV FCL_PATH=/home/fcl/build
+
+# Install python 3.11
+RUN add-apt-repository -y ppa:deadsnakes/ppa && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt install -y python3.11-dev python3.11-venv
+
+RUN cd /home && \
+    git clone https://github.com/vhartman/rai.git --branch changes rai-fork && \
+    cd /home/rai-fork && \
+    # Remove sudo and question option from build/generic.mk
+    sed -i 's/sudo apt-get -q $(APTGETYES) install $(DEPEND_UBUNTU)/apt-get install -y $(DEPEND_UBUNTU)/g' build/generic.mk && \
+    echo "Installing rai dependencies" && \
+    make cleanAll && \
+    make installUbuntuAll && \
+    # Cleanup
+    cd /home && \
+    rm -rf rai-fork
+
+RUN cd /home && \
+    mkdir venvs
+
+COPY tapas_requirements.txt /home/venvs/tapas_requirements.txt
+
+
+RUN cd /home/venvs && \
+    python3.11 -m venv tapasEnv && \
+    source /home/venvs/tapasEnv/bin/activate && \
+    python3 -m pip install --upgrade pip && \
+    pip3 install -r tapas_requirements.txt
+
+RUN export HOME=/home/tapas && \   
+    echo "echo \"Sourcing tapasEnv from /etc/bash.bashrc\"" >> /etc/bash.bashrc && \
+    echo "source /home/venvs/tapasEnv/bin/activate" >> /etc/bash.bashrc

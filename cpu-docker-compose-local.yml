@@ -4,7 +4,7 @@ services:
             - ./:/home/tapas
             - /tmp/.X11-unix:/tmp/.X11-unix
         user: "${CUSTUM_UID}:${CUSTUM_GID}"
-        image: "miguelzamoram/tapas-container-gpu"
+        image: "miguelzamoram/tapas-container-cpu"
         stdin_open: true # docker run -i
         tty: true        # docker run -t
         command: /bin/bash
@@ -12,11 +12,4 @@ services:
             - DISPLAY=${DISPLAY}
             - HOME=/home/tapas
             - SHELL=/bin/bash
-        container_name: tapasContainer        
-        deploy:
-            resources:
-                reservations:
-                    devices:
-                        - driver: nvidia
-                          device_ids: ['0']
-                          capabilities: [gpu]
+        container_name: tapasContainer

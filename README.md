@@ -50,8 +50,9 @@ docker compose down
 
 ## TODO
     - General code cleanup
-    - Make wandb optional.
+    - Make wandb optional.    
     - Configure cpu-only docker.
+    - Build smaller/cleaner docker container.
     - Add hydra to manage different configurations.
 
 # Citation

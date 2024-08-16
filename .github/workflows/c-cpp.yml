@@ -14,7 +14,7 @@ jobs:
           - name: Run the build process with Docker
             uses: addnab/docker-run-action@v3
             with:
-                image: "miguelzamoram/tapas-container"
+                image: "miguelzamoram/tapas-container-cpu"
                 options: -v ${{ github.workspace }}:/home/tapas -e HOME=/home/tapas -e SHELL=/bin/bash
                 run: |
                     cd /home/tapas/multi-agent-tamp-solver/24-data-gen/

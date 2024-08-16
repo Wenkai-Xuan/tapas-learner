@@ -119,7 +119,7 @@ def run_training_loop(cfg: DictConfig) -> None:
         
     
     run = wandb.init(project="TapasFormer_env_" + ENV_NAME, config=params)
-    wandb.login()
+    #wandb.login()
     #wandb.log({"normalization_params": normalization_params})
     wandb.save(LOG_DIR + "/normalization_params.json")
     wandb.save(LOG_DIR + "/params.json")

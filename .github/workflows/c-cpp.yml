@@ -1,0 +1,27 @@
+name: C/C++ CI
+
+on:
+  push:    
+  pull_request:    
+
+jobs:
+    compile:
+        name: Compile Repo with dependencies
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out the repo
+            uses: actions/checkout@v3
+          - name: Run the build process with Docker
+            uses: addnab/docker-run-action@v3
+            with:
+                image: "miguelzamoram/tapas-container"
+                options: -v ${{ github.workspace }}:/home/tapas -e HOME=/home/tapas -e SHELL=/bin/bash
+                run: |
+                    cd /home/tapas/multi-agent-tamp-solver/24-data-gen/
+                    make                    
+          - name: Archive benchmark results
+            uses: actions/upload-artifact@v4
+            with:
+              name: benchmark_logs
+              path: |
+                out

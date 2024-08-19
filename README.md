@@ -15,19 +15,27 @@
 
 ## Training
 - Launch docker
-    ```
-    CUSTUM_UID=$(id -u) CUSTUM_GID=$(id -g) docker compose -f gpu-docker-compose-local.yml up -d
-    docker exec -it tapasContainer bash
-    ```
+    - GPU enabled
+        ```
+        CUSTUM_UID=$(id -u) CUSTUM_GID=$(id -g) docker compose -f gpu-docker-compose-local.yml up -d
+        docker exec -it tapasContainer bash
+        ```
+    - For CPU only, use `cpu-docker-compose-local.yml`
 - Compile solver
     ```
     cd /home/tapas/multi-agent-tamp-solver/24-data-gen/
     make
     ```
-- Loging to wand. (Required for now)
-    ```    
-    wandb login --relogin
-    ```
+- Setup wandb:     
+    - Either login to wandb
+        ```    
+        wandb login --relogin
+        ```
+    - Or set the mode to  offiline:
+        ```    
+        export WANDB_MODE=offline
+        ```
+
 - Run the code
     ```
     cd /home/tapas/src/
@@ -50,10 +58,6 @@ docker compose down
 
 ## TODO
     - General code cleanup
-    - Make wandb optional.    
-    - Configure cpu-only docker.
-    - Build smaller/cleaner docker container.
-    - Add hydra to manage different configurations.
 
 # Citation
 If you use this codebase in your research, please cite the following paper

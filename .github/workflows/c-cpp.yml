@@ -25,7 +25,7 @@ jobs:
                     cd /home/tapas/multi-agent-tamp-solver/24-data-gen/                    
                     make
                     cd /home/tapas/src/
-                    export WANDB_MODE=offline                    
+                    export WANDB_MODE=offline
                     python3 train.py ++num_epochs=1 ++num_threads=1 ++train_samples_id="000080000_to_000080868.parquet" ++test_samples_id="000020000_to_000021869.parquet"
           - name: Archive benchmark results
             uses: actions/upload-artifact@v4

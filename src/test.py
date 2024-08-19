@@ -52,7 +52,7 @@ def run_testing(cfg: DictConfig) -> None:
 
     model_path = root_path + "/model_latest.pth"
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-    map_location = torch.device('gpu') if torch.cuda.is_available() else torch.device("cpu")
+    map_location = torch.device('cuda') if torch.cuda.is_available() else torch.device("cpu")
     state_dict = torch.load(model_path, map_location= map_location)
 
     normalization_params_path = root_path + "/normalization_params.json" 

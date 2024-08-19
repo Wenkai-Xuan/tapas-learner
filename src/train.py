@@ -27,7 +27,7 @@ def run_training_loop(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
     #%%
     # Define params
-    ENV_NAME = cfg["env_name"]
+    ENV_NAME = cfg["env_name"] # "random" "husky" "conveyor" "shelf"
     NUM_THREADS = cfg["num_threads"]
     LEARNING_RATE = cfg["learning_rate"]
     NUM_EPOCHS = cfg["num_epochs"]

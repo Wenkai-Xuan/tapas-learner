@@ -21,6 +21,13 @@
         docker exec -it tapasContainer bash
         ```
     - For CPU only, use `cpu-docker-compose-local.yml`
+
+    - Note: When running rootless docker on a server, the environment variables `CUSTUM_UID=$(id -u) CUSTUM_GID=$(id -g)` can be ommited.
+        ```
+        docker compose -f gpu-docker-compose-local.yml up -d
+        docker exec -it tapasContainer bash
+        ```
+
 - Compile solver
     ```
     cd /home/tapas/multi-agent-tamp-solver/24-data-gen/
@@ -51,10 +58,14 @@
 
 
 ## Cleanup
-Remember to stop the containers after exiting.
-```
-docker compose down
-```
+- Exit the container:
+    ```
+    exit
+    ```
+- Remember to stop the containers after exiting.
+    ```
+    docker stop tapasContainer
+    ```
 
 ## TODO
     - General code cleanup

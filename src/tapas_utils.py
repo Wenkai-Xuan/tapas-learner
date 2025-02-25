@@ -12,14 +12,14 @@ size_dim = 3  # Dimension of vector describing size
 
 
 def get_raw_features_dim():
-    # token = [robot_id, task_id, obj_id, robot_pos, obj_init_pose, obj_goal_pose, obj_size]
+    # token = [robot_id, task_id, obj_id, robot_pos, obj_init_pose, obj_goal_pose, obj_size], robot_joint
     # Consider: - Removing robot_id
     #           - Adding robot type.
     #           - Adding robot EE pose
     #           - Adding Robot Joint pos.
 
     # return max_num_robots + max_num_tasks + max_num_objs + 3 + 2 * self.pose_dim + self.size_dim
-    return max_num_tasks + 2 * max_num_robots + max_num_objs + 2 * 3 + 2 * pose_dim + size_dim
+    return max_num_tasks + 2 * max_num_robots + max_num_objs + 2 * 3 + 2 * pose_dim + size_dim + 6 * 2 #6 * max_num_robots
 
 
 def get_raw_features_seq(entry):
@@ -40,14 +40,28 @@ def get_raw_features_seq(entry):
         robot_name = task['robots'][0]
         robot_id_first = robot_ids_dict[robot_name]
         robot_pos_first = torch.Tensor(entry['scene']['Robots'][robot_name]['base_pose']['pos'])
+        robot_joint_first = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
 
         robot_id_second = robot_ids_dict[task['robots'][0]]
         robot_pos_second = torch.Tensor(entry['scene']['Robots'][robot_name]['base_pose']['pos'])
+        robot_joint_second = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
         if task['primitive'] != 'pick':
             robot_name = task['robots'][1]
             robot_id_second = robot_ids_dict[robot_name]
             robot_pos_second = torch.Tensor(entry['scene']['Robots'][robot_name]['base_pose']['pos'])
-
+            robot_joint_second = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
+        
+        # try: 
+        #     robot_name = task['robots'][2]
+        #     robot_joint_third = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
+        # except: 
+        #     robot_joint_third = torch.zeros(6)
+        # try: 
+        #     robot_name = task['robots'][3]
+        #     robot_joint_fourth = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
+        # except: 
+        #     robot_joint_fourth = torch.zeros(6)
+        
         obj_key = 'obj' + str(task['object'] + 1)
         goal_key = 'goal' + str(task['object'] + 1)
         obj_init_pos = torch.Tensor(entry['scene']['Objects'][obj_key]['start']['abs_pos'])
@@ -60,6 +74,7 @@ def get_raw_features_seq(entry):
         temp = torch.cat((task_id, robot_id_first,
                           robot_id_second, obj_id,
                           robot_pos_first, robot_pos_second,
+                          robot_joint_first, robot_joint_second, #robot_joint_third, robot_joint_fourth,
                           obj_init_pos, obj_init_rot,
                           obj_goal_pos, obj_goal_rot, obj_size), 0)
 
@@ -118,14 +133,28 @@ def get_raw_features_seq_per_time_step(entry):
         robot_name = task['robots'][0]
         robot_id_first = robot_ids_dict[robot_name]
         robot_pos_first = torch.Tensor(entry['scene']['Robots'][robot_name]['base_pose']['pos'])
+        robot_joint_first = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
 
         robot_id_second = robot_ids_dict[task['robots'][0]]
         robot_pos_second = torch.Tensor(entry['scene']['Robots'][robot_name]['base_pose']['pos'])
+        robot_joint_second = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
         if task['primitive'] != 'pick':
             robot_name = task['robots'][1]
             robot_id_second = robot_ids_dict[robot_name]
             robot_pos_second = torch.Tensor(entry['scene']['Robots'][robot_name]['base_pose']['pos'])
+            robot_joint_second = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
 
+        # try: 
+        #     robot_name = task['robots'][2]
+        #     robot_joint_third = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
+        # except: 
+        #     robot_joint_third = torch.zeros(6)
+        # try: 
+        #     robot_name = task['robots'][3]
+        #     robot_joint_fourth = torch.Tensor(entry['scene']['Robots'][robot_name]['initial_pose'])
+        # except: 
+        #     robot_joint_fourth = torch.zeros(6)
+        
         obj_key = 'obj' + str(task['object'] + 1)
         goal_key = 'goal' + str(task['object'] + 1)
         obj_init_pos = torch.Tensor(entry['scene']['Objects'][obj_key]['start']['abs_pos'])
@@ -138,6 +167,7 @@ def get_raw_features_seq_per_time_step(entry):
         temp = torch.cat((task_id, robot_id_first,
                           robot_id_second, obj_id,
                           robot_pos_first, robot_pos_second,
+                          robot_joint_first, robot_joint_second, #robot_joint_third, robot_joint_fourth,
                           obj_init_pos, obj_init_rot,
                           obj_goal_pos, obj_goal_rot, obj_size), 0)
 

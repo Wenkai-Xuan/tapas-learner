@@ -208,6 +208,13 @@ def run_training_loop(cfg: DictConfig) -> None:
             # #To check that everything happens on the same thread and that the batches are different.
             # print("\npid", os.getpid(), "iter", i, "folders", len(batch['folders'][0]))
             # print("pid", os.getpid(), "iter", i, batch['folders'][0])
+
+            #if #int(epoch) % 5 == 0:        
+            model_path = os.path.join(LOG_DIR, f"model_{step}.pth")
+            torch.save(model.state_dict(), model_path)
+            torch.save(model.state_dict(), os.path.join(LOG_DIR, f"model_latest.pth"))
+            run.log_model(path=model_path, name=f"model_{step}.pth")
+            
         train_bar.refresh()
     epoch_bar.refresh()
     print("\npid", os.getpid(), "Training loop done!")

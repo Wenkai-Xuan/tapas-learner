@@ -3,6 +3,7 @@ services:
         volumes:            
             - ./:/home/tapas
             - /tmp/.X11-unix:/tmp/.X11-unix
+            - /home/tapasdeveloper/Desktop/msc_thesis/wenkai/mujoco_simulation/unified_scene/replans/replan_data:/home/tapas/replan_data
         user: "${CUSTUM_UID}:${CUSTUM_GID}"
         image: "miguelzamoram/tapas-container-gpu"
         stdin_open: true # docker run -i

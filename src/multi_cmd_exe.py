@@ -38,8 +38,8 @@ def get_cmd_str_to_plan_for_sequence(relative_path_to_robot_file,
     return cmd_str
 
 def latest_sequences(folder_path):
-    subfolders = [f.path for f in os.scandir(folder_path) if f.is_dir()]
-    sequences = [s for s in subfolders if s.startswith("/home/tapas/multi-agent-tamp-solver/24-data-gen/out/sequence_generation")]  # the list of all generated sequences
+    subfolders = [f.path for f in os.scandir(folder_path) if f.is_dir()] #full paths for all subdirectories within folder_path
+    sequences = [s for s in subfolders if s.startswith(f"{folder_path}sequence_generation")]  # the list of all generated sequences
     if not sequences:
         return None
     
@@ -53,14 +53,18 @@ OBJ_NAME = "conveyor_obj_output_5_rela"
 
 solver_path = "/home/tapas/multi-agent-tamp-solver/24-data-gen/"
 
-path_to_input_files = "/home/tapasdeveloper/Desktop/msc_thesis/wenkai/mujoco_simulation/unified_scene/replans/replan_conveyor_5_20250221_183705/"
-with open(f"{path_to_input_files}/hold_info_conveyor_5.json", "r") as file:
-    hold_info = json.load(file)
+# in the folder of this python file, we should use relative path to the input files(replan_data)
+rela_path_to_input_files = "../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250304_222155/"
+with open(f"{rela_path_to_input_files}part_hold_info_conveyor_5.json", "r") as file:
+    part_hold_info = json.load(file)
 
-for i in range(len(hold_info)):
-    path_to_robot_file =  path_to_input_files + f"{i}/" + ROB_NAME + ".json" 
-    path_to_obj_file =  path_to_input_files + f"{i}/" + OBJ_NAME + ".json"
-    output_path = path_to_input_files + f"{i}/"
+# when we run cmd_str, we will first cd to the folder of replan_data
+path_to_input_files = "replan_data/replan_ini_conveyor_5_20250304_222155/"
+for i in range(len(part_hold_info)):
+    subdir = part_hold_info[i]["hold_step"]
+    path_to_robot_file =  path_to_input_files + f"{subdir}"+"/" + ROB_NAME + ".json" 
+    path_to_obj_file =  path_to_input_files + f"{subdir}"+"/" + OBJ_NAME + ".json"
+    output_path = path_to_input_files + f"{subdir}" + "/"
     print("path ", path_to_input_files)
     # if not os.path.exists(full_path_to_input_files):
     #     os.makedirs(full_path_to_input_files)
@@ -75,8 +79,8 @@ for i in range(len(hold_info)):
 
     # plan for sequences
     seq_name = "sequence_generation"
-    latest_sequence = latest_sequences(solver_path + "out") # return the absolute path value
-    seq_fullname = latest_sequence.removeprefix("/home/tapas/multi-agent-tamp-solver/24-data-gen/")
+    latest_sequence = latest_sequences(os.path.join(solver_path, output_path)) # return the absolute path value
+    seq_fullname = latest_sequence.removeprefix(f"{solver_path}")
     print(seq_fullname)
     relative_path_to_seq_file = seq_fullname + "/" + "sequences.json"
     cmd_str = get_cmd_str_to_plan_for_sequence(path_to_robot_file, 

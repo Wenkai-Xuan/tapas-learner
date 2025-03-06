@@ -55,6 +55,7 @@ def get_cmd_str_to_plan_for_sequence(seq_id, env_filename, robot_filename, obj_f
 
 def get_cmd_str_to_generate_sequences(relative_path_to_robot_file,
                                       relative_path_to_obj_file,
+                                      output_path,
                                       r_seed):
     cmd_str = "echo $PWD && cd /home/tapas/multi-agent-tamp-solver/24-data-gen/ && echo $PWD && "
     cmd_str += "xvfb-run -a --server-args=\"-screen 0 480x480x24\" "
@@ -65,12 +66,14 @@ def get_cmd_str_to_generate_sequences(relative_path_to_robot_file,
     cmd_str += "--attempt_komo false -display false -export_images false -verbosity 5 -early_stopping false "
     cmd_str += "-scene_path 'in/scenes/floor.g' "
     # cmd_str += "-obstacle_path 'in/obstacles/shelf.json' "
+    cmd_str += "-output_path " + output_path + " "
     return cmd_str
 
 
 def get_cmd_str_to_plan_for_sequence(relative_path_to_robot_file,
                                      relative_path_to_obj_file,
                                      relative_path_to_seq_file,
+                                     output_path,
                                      r_seed):
     cmd_str = "echo $PWD && cd /home/tapas/multi-agent-tamp-solver/24-data-gen/ && echo $PWD && "
     cmd_str += "xvfb-run -a --server-args=\"-screen 0 480x480x24\" "
@@ -82,6 +85,7 @@ def get_cmd_str_to_plan_for_sequence(relative_path_to_robot_file,
     cmd_str += "-scene_path 'in/scenes/floor.g' "
     # cmd_str += "-obstacle_path 'in/obstacles/shelf.json' "
     cmd_str += "-sequence_path " + relative_path_to_seq_file + " "
+    cmd_str += "-output_path " + output_path + " "
     return cmd_str
 
 def exec_cmd(cmd_str):

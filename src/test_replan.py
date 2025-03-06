@@ -39,16 +39,18 @@ def run_testing(cfg: DictConfig) -> None:
     # The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
     # See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
     # Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader().
-    dataset = load_dataset("data_replan",
-                        data_files={'train': "conveyor_5_rela_train.parquet",
-                                    'test': "conveyor_5_rela_test.parquet"})  # download_mode='force_redownload'
+    dataset = load_dataset("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250302_174502/",
+                        data_files={'train': "conveyor_5_rela_15_train.parquet",
+                                    'test': "conveyor_5_rela_15_test.parquet"})  # download_mode='force_redownload'
     #print("pid", os.getpid(), dataset)
     
     
     #%%
     ### Load pretrained model.
-    root_path = "/home/tapas/src/logs/2025_01_14_13_54_43/"
+    rela_replan_data_path = "replan_data/replan_ini_conveyor_5_20250304_222155/"
     solver_path = "/home/tapas/multi-agent-tamp-solver/24-data-gen/"
+    replan_data_path = f"{solver_path}{rela_replan_data_path}"
+    root_path = f"{replan_data_path}logs/2025_03_05_11_17_08/"
 
     model_path = root_path + "/model_latest.pth"
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -91,7 +93,7 @@ def run_testing(cfg: DictConfig) -> None:
     obj_suffix = "num_obj_" + str(env_sample["metadata"]["metadata"]["num_objects"])
     #%%
     # Write required files to disk for solver.
-    relative_path_to_input_files = "in/" + ENV_NAME + "_" +  datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + "/"
+    relative_path_to_input_files = rela_replan_data_path + "in/" + ENV_NAME + "_" +  datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + "/"
     relative_path_to_robot_file =  relative_path_to_input_files + robot_suffix + ".json" 
     relative_path_to_obj_file =  relative_path_to_input_files + obj_suffix + ".json"
     full_path_to_input_files = solver_path + relative_path_to_input_files
@@ -107,7 +109,7 @@ def run_testing(cfg: DictConfig) -> None:
     # print("scene_path", scene_path)
     #%%
     seqs_names = ["test_seq_predicted_order", "test_seq_original_order", "test_seq_random_order" ]
-    output_path = solver_path + "out/"
+    output_path = replan_data_path + "out/"
     DEVICE = "cpu" #"cuda", "cpu"
     # #### Timer should start here?
     # tic = time.perf_counter()
@@ -123,6 +125,7 @@ def run_testing(cfg: DictConfig) -> None:
         ### Generate sequences
         cmd_str = get_cmd_str_to_generate_sequences(relative_path_to_robot_file,
                                                     relative_path_to_obj_file,
+                                                    rela_replan_data_path+"out/",
                                                     r_seed)
         exec_cmd(cmd_str)    
         
@@ -173,6 +176,7 @@ def run_testing(cfg: DictConfig) -> None:
             cmd_str = get_cmd_str_to_plan_for_sequence(relative_path_to_robot_file, 
                                                     relative_path_to_obj_file, 
                                                     relative_path_to_seq_file, 
+                                                    rela_replan_data_path+"out/",
                                                     r_seed)
             exec_cmd(cmd_str)
             

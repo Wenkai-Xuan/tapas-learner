@@ -42,9 +42,9 @@ def run_training_loop(cfg: DictConfig) -> None:
     # The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
     # See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
     # Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader() .
-    dataset = load_dataset("data_replan",
-                        data_files={'train': "conveyor_5_rela_train.parquet",
-                                    'test': "conveyor_5_rela_test.parquet"})  # ,token=True, download_mode='force_redownload'
+    dataset = load_dataset("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250304_222155/",
+                        data_files={'train': "conveyor_5_rela_50_train.parquet",
+                                    'test': "conveyor_5_rela_50_test.parquet"})  # ,token=True, download_mode='force_redownload'
     #print("pid", os.getpid(), dataset)
 
     # Set num_shards >= num_workers.
@@ -82,7 +82,7 @@ def run_training_loop(cfg: DictConfig) -> None:
 
     obs_dim = get_raw_features_dim()
     
-    LOG_DIR = os.path.join("./logs", datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    LOG_DIR = os.path.join("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250304_222155/logs", datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     if not os.path.exists(LOG_DIR):
         os.makedirs(LOG_DIR)
         

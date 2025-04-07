@@ -15,7 +15,7 @@ def get_cmd_str_to_generate_sequences(relative_path_to_robot_file,
     cmd_str += "-obj_path " + relative_path_to_obj_file + " "
     cmd_str += "--attempt_komo false -display false -export_images false -verbosity 5 -early_stopping false "
     cmd_str += "-scene_path 'in/scenes/floor.g' "
-    # cmd_str += "-obstacle_path 'in/obstacles/shelf.json' "
+    cmd_str += "-obstacle_path 'in/obstacles/shelf_bigger.json' "
     cmd_str += "-output_path " + output_path + " "
     return cmd_str
 
@@ -32,7 +32,7 @@ def get_cmd_str_to_plan_for_sequence(relative_path_to_robot_file,
     cmd_str += "-obj_path " + relative_path_to_obj_file + " "
     cmd_str += "--attempt_komo false -display false -export_images false -verbosity 5 -early_stopping false "
     cmd_str += "-scene_path 'in/scenes/floor.g' "
-    # cmd_str += "-obstacle_path 'in/obstacles/shelf.json' "
+    cmd_str += "-obstacle_path 'in/obstacles/shelf_bigger.json' "
     cmd_str += "-sequence_path " + relative_path_to_seq_file + " "
     cmd_str += "-output_path " + output_path + " "
     return cmd_str
@@ -47,19 +47,20 @@ def latest_sequences(folder_path):
 
     return latest_sequences
 
-
-ROB_NAME = "conveyor_robot_output_5_rela"
-OBJ_NAME = "conveyor_obj_output_5_rela"
+ENV_NAME = "shelf"
+sample_indx = 52
+ROB_NAME = f"{ENV_NAME}_robot_output_{sample_indx}_rela"
+OBJ_NAME = f"{ENV_NAME}_obj_output_{sample_indx}_rela"
 
 solver_path = "/home/tapas/multi-agent-tamp-solver/24-data-gen/"
 
 # in the folder of this python file, we should use relative path to the input files(replan_data)
-rela_path_to_input_files = "../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250304_222155/"
-with open(f"{rela_path_to_input_files}part_hold_info_conveyor_5.json", "r") as file:
+rela_path_to_input_files = "../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_shelf_52_20250317_143018/"
+with open(f"{rela_path_to_input_files}part_hold_info_{ENV_NAME}_{sample_indx}.json", "r") as file:
     part_hold_info = json.load(file)
 
 # when we run cmd_str, we will first cd to the folder of replan_data
-path_to_input_files = "replan_data/replan_ini_conveyor_5_20250304_222155/"
+path_to_input_files = "replan_data/replan_ini_shelf_52_20250317_143018/"
 for i in range(len(part_hold_info)):
     subdir = part_hold_info[i]["hold_step"]
     path_to_robot_file =  path_to_input_files + f"{subdir}"+"/" + ROB_NAME + ".json" 
@@ -68,7 +69,13 @@ for i in range(len(part_hold_info)):
     print("path ", path_to_input_files)
     # if not os.path.exists(full_path_to_input_files):
     #     os.makedirs(full_path_to_input_files)
-
+    ppp = os.path.join(solver_path, output_path)
+    subf = [f.path for f in os.scandir(ppp) if f.is_dir()]
+    plan = [s for s in subf if s.startswith(f"{ppp}sequence_plan")]
+    if plan:
+        print("Already planned for this sequence")
+        continue
+    
     r_seed = random.randint(0, 9999)
     # Generate sequences
     cmd_str = get_cmd_str_to_generate_sequences(path_to_robot_file,

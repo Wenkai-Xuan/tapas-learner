@@ -64,8 +64,8 @@ def get_cmd_str_to_generate_sequences(relative_path_to_robot_file,
     cmd_str += "-robot_path " + relative_path_to_robot_file + " "
     cmd_str += "-obj_path " + relative_path_to_obj_file + " "
     cmd_str += "--attempt_komo false -display false -export_images false -verbosity 5 -early_stopping false "
-    cmd_str += "-scene_path 'in/scenes/floor.g' "
-    # cmd_str += "-obstacle_path 'in/obstacles/shelf.json' "
+    cmd_str += "-scene_path 'in/scenes/husky.g' "
+    # cmd_str += "-obstacle_path 'in/obstacles/shelf_bigger.json' "
     cmd_str += "-output_path " + output_path + " "
     return cmd_str
 
@@ -82,8 +82,8 @@ def get_cmd_str_to_plan_for_sequence(relative_path_to_robot_file,
     cmd_str += "-robot_path " + relative_path_to_robot_file + " "
     cmd_str += "-obj_path " + relative_path_to_obj_file + " "
     cmd_str += "--attempt_komo false -display false -export_images false -verbosity 5 -early_stopping false "
-    cmd_str += "-scene_path 'in/scenes/floor.g' "
-    # cmd_str += "-obstacle_path 'in/obstacles/shelf.json' "
+    cmd_str += "-scene_path 'in/scenes/husky.g' "
+    # cmd_str += "-obstacle_path 'in/obstacles/shelf_bigger.json' "
     cmd_str += "-sequence_path " + relative_path_to_seq_file + " "
     cmd_str += "-output_path " + output_path + " "
     return cmd_str

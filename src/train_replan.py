@@ -42,9 +42,9 @@ def run_training_loop(cfg: DictConfig) -> None:
     # The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
     # See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
     # Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader() .
-    dataset = load_dataset("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250304_222155/",
-                        data_files={'train': "conveyor_5_rela_50_train.parquet",
-                                    'test': "conveyor_5_rela_50_test.parquet"})  # ,token=True, download_mode='force_redownload'
+    dataset = load_dataset("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_uni/",
+                        data_files={'train': "uni_train.parquet",
+                                    'test': "uni_test.parquet"})  # ,token=True, download_mode='force_redownload'
     #print("pid", os.getpid(), dataset)
 
     # Set num_shards >= num_workers.
@@ -53,12 +53,15 @@ def run_training_loop(cfg: DictConfig) -> None:
     num_shards_test = min(len(dataset['test']), NUM_THREADS)
     iterable_train_dataset = dataset['train'].to_iterable_dataset(num_shards=num_shards_train)
     iterable_test_dataset = dataset['test'].to_iterable_dataset(num_shards=num_shards_test)
-
+    # for a in iterable_train_dataset:
+    #     json.dump(a, open("iterable_train_dataset.json", "w"))
+    #     break
     #print("pid", os.getpid(), iterable_train_dataset)
     #print("pid", os.getpid(), iterable_test_dataset)
 
     iter_train_ds_processed = iterable_train_dataset.map(process_data, remove_columns=iterable_train_dataset.column_names)
     iter_test_ds_processed = iterable_test_dataset.map(process_data, remove_columns=iterable_test_dataset.column_names)
+    # after using 'process_data' func here, data gets the 'observation, src_key_padding_mask, targets, folders'
 
     #print("pid", os.getpid(), iter_train_ds_processed)
     #print("pid", os.getpid(), iter_test_ds_processed)
@@ -82,7 +85,7 @@ def run_training_loop(cfg: DictConfig) -> None:
 
     obs_dim = get_raw_features_dim()
     
-    LOG_DIR = os.path.join("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250304_222155/logs", datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    LOG_DIR = os.path.join("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_uni/logs", datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     if not os.path.exists(LOG_DIR):
         os.makedirs(LOG_DIR)
         
@@ -121,11 +124,11 @@ def run_training_loop(cfg: DictConfig) -> None:
     write_json_file(LOG_DIR + "/params.json", params)
         
     
-    run = wandb.init(project="TapasFormer_env_" + ENV_NAME, config=params)
+    run = wandb.init(project="TapasFormer_" + ENV_NAME + "_uni_", config=params)
     #wandb.login()
     #wandb.log({"normalization_params": normalization_params})
-    wandb.save(LOG_DIR + "/normalization_params.json")
-    wandb.save(LOG_DIR + "/params.json")
+    # wandb.save(LOG_DIR + "/normalization_params.json")
+    # wandb.save(LOG_DIR + "/params.json")
             
     model = TapasFormer(obs_dim=obs_dim, normalization_params=normalization_params).to(DEVICE)
     criterion = nn.MSELoss()
@@ -151,6 +154,7 @@ def run_training_loop(cfg: DictConfig) -> None:
                                position=0, leave=True)                
         for i, batch in enumerate(train_bar):
             train_bar.set_description(f"Training batch {i}.")
+            # print(batch)
             # Log performance
             if i % int(max_num_batches_train / evals_per_epoch) == 0:
                 model.eval()                
@@ -214,10 +218,10 @@ def run_training_loop(cfg: DictConfig) -> None:
             # print("pid", os.getpid(), "iter", i, batch['folders'][0])
 
             #if #int(epoch) % 5 == 0:        
-            model_path = os.path.join(LOG_DIR, f"model_{step}.pth")
+            model_path = os.path.join(LOG_DIR, f"model_latest.pth")
             torch.save(model.state_dict(), model_path)
-            torch.save(model.state_dict(), os.path.join(LOG_DIR, f"model_latest.pth"))
-            run.log_model(path=model_path, name=f"model_{step}.pth")
+            # torch.save(model.state_dict(), os.path.join(LOG_DIR, f"model_latest.pth"))
+            run.log_model(path=model_path, name=f"model_latest.pth")
             
         train_bar.refresh()
     epoch_bar.refresh()

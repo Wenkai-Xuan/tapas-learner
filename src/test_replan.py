@@ -39,18 +39,18 @@ def run_testing(cfg: DictConfig) -> None:
     # The iterable dataset will stream from local files. This approach is only feasible provided enough disk space.
     # See: https://huggingface.co/docs/datasets/en/stream#convert-from-a-dataset
     # Note: Avoid download_mode='force_redownload' when using the num_workers argument for the DataLoader().
-    dataset = load_dataset("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_conveyor_5_20250302_174502/",
-                        data_files={'train': "conveyor_5_rela_15_train.parquet",
-                                    'test': "conveyor_5_rela_15_test.parquet"})  # download_mode='force_redownload'
+    dataset = load_dataset("../multi-agent-tamp-solver/24-data-gen/replan_data/replan_ini_uni/",
+                        data_files={'train': "uni_train.parquet",
+                                    'test': "uni_test.parquet"})  # download_mode='force_redownload'
     #print("pid", os.getpid(), dataset)
     
     
     #%%
     ### Load pretrained model.
-    rela_replan_data_path = "replan_data/replan_ini_conveyor_5_20250304_222155/"
+    rela_replan_data_path = "replan_data/replan_ini_uni/"
     solver_path = "/home/tapas/multi-agent-tamp-solver/24-data-gen/"
     replan_data_path = f"{solver_path}{rela_replan_data_path}"
-    root_path = f"{replan_data_path}logs/2025_03_05_11_17_08/"
+    root_path = f"{replan_data_path}logs/2025_04_02_17_02_59/"
 
     model_path = root_path + "/model_latest.pth"
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -76,8 +76,8 @@ def run_testing(cfg: DictConfig) -> None:
             dataset['test'][i]["metadata"]["metadata"]["num_objects"] == target_num_objs):
             ids.append(i)
         # Comment the following conditional the search for all samples that have target_num_robots and target_num_objs
-        if len(ids) > 1:
-            break    
+        # if len(ids) > 1:
+        #     break    
 
     if len(ids) == 0:
         print("No valid samples found")
@@ -110,6 +110,8 @@ def run_testing(cfg: DictConfig) -> None:
     #%%
     seqs_names = ["test_seq_predicted_order", "test_seq_original_order", "test_seq_random_order" ]
     output_path = replan_data_path + "out/"
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
     DEVICE = "cpu" #"cuda", "cpu"
     # #### Timer should start here?
     # tic = time.perf_counter()
@@ -185,7 +187,7 @@ def run_testing(cfg: DictConfig) -> None:
             #plot_makespans(makespans, compute_times, plot_name)
             
             run_name = "envId_" + str(env_id) + "_test_id_" + str(id_test)
-            run = wandb.init(project="TestTAMPFormer_" + "envId_" + str(env_id), name=run_name)        
+            run = wandb.init(project="TestTAMPFormer_" + ENV_NAME + "_uni__", name=run_name)        
             m = list(makespans.values())
             c = list(compute_times.values())
             for i in range(len(c)):

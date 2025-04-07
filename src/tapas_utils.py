@@ -19,7 +19,8 @@ def get_raw_features_dim():
     #           - Adding Robot Joint pos.
 
     # return max_num_robots + max_num_tasks + max_num_objs + 3 + 2 * self.pose_dim + self.size_dim
-    return max_num_tasks + 2 * max_num_robots + max_num_objs + 2 * 3 + 2 * pose_dim + size_dim + 6 * 2 #6 * max_num_robots
+    return max_num_tasks + 2 * max_num_robots + max_num_objs + 2 * 3 + 2 * pose_dim + size_dim + 6 * 2 + max_num_scenes
+    # pose_size * involv_num_robots (or 6 * max_num_robots) + scene_num
 
 
 def get_raw_features_seq(entry):
@@ -36,6 +37,9 @@ def get_raw_features_seq(entry):
             # Todo: Figure out step id.
         task_id = tasks_ids_dict[task['primitive']]
         obj_id = objs_ids_dict[task['object']]
+        # print("obs_key_len:", entry['scene']['Obstacles'].keys())
+        count = sum(1 for v in entry['scene']['Obstacles'].values() if v is not None)
+        scene_id = scene_ids_dict[obs_scene_dict[count]] # use the length of the obstacles' keys to get the scene id
 
         robot_name = task['robots'][0]
         robot_id_first = robot_ids_dict[robot_name]
@@ -72,7 +76,7 @@ def get_raw_features_seq(entry):
 
         obj_size = torch.Tensor(entry['scene']['Objects'][obj_key]['size'][0:3])
         temp = torch.cat((task_id, robot_id_first,
-                          robot_id_second, obj_id,
+                          robot_id_second, obj_id, scene_id,
                           robot_pos_first, robot_pos_second,
                           robot_joint_first, robot_joint_second, #robot_joint_third, robot_joint_fourth,
                           obj_init_pos, obj_init_rot,
@@ -129,6 +133,7 @@ def get_raw_features_seq_per_time_step(entry):
             # Todo: Figure out step id.
         task_id = tasks_ids_dict[task['primitive']]
         obj_id = objs_ids_dict[task['object']]
+        scene_id = scene_ids_dict[obs_scene_dict[len(entry['scene']['Obstacles'].keys())]] # use the length of the obstacles' keys to get the scene id
 
         robot_name = task['robots'][0]
         robot_id_first = robot_ids_dict[robot_name]
@@ -165,7 +170,7 @@ def get_raw_features_seq_per_time_step(entry):
 
         obj_size = torch.Tensor(entry['scene']['Objects'][obj_key]['size'][0:3])
         temp = torch.cat((task_id, robot_id_first,
-                          robot_id_second, obj_id,
+                          robot_id_second, obj_id, scene_id,
                           robot_pos_first, robot_pos_second,
                           robot_joint_first, robot_joint_second, #robot_joint_third, robot_joint_fourth,
                           obj_init_pos, obj_init_rot,

@@ -24,11 +24,14 @@ def get_entity_id_dict(keys):
 tasks_ids_dict = get_entity_id_dict(['pick', 'pickpick1', 'pickpick2', 'handover', 'policy'])
 robot_ids_dict = get_entity_id_dict(['a0_', 'a1_', 'a2_', 'a3_'])
 objs_ids_dict = get_entity_id_dict([0, 1, 2, 3])
+scene_ids_dict = get_entity_id_dict(['conveyor', 'husky', 'shelf', 'random'])
+obs_scene_dict = {5: 'conveyor', 44: 'husky', 8: 'shelf', 3: 'random'}
 
 # Define max limits
 max_num_objs = len(objs_ids_dict)
 max_num_robots = len(robot_ids_dict)
 max_num_tasks = len(tasks_ids_dict)
+max_num_scenes = len(scene_ids_dict)
 max_planSequence_length = 8  #Max planning sequence length should be 2 * num_objects.
 encoding_dim = 128  # Same as decision transformers
 pose_dim = 7  # 3 coeffs for  positions + 4 coeffs for quaternion              
